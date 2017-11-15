@@ -36,19 +36,6 @@ function exec_ping() {
 	esac
 }
 
-function test_host() {
-	exec_ping $* > /dev/null
-	if [ $? != 0 ] ; then
-		echo -n "["
-		cecho -n -red "KO"
-		echo -n "]"
-	else
-		echo -n "["
-		cecho -n -green "UP"
-		echo -n "]"
-	fi 
-}
-
 function separator() {
 	echo -e "----\t----\t----\t----\t----\t----\t----\t----"
 }
@@ -57,10 +44,10 @@ function list_commands() {
 	separator
 	echo -e "Availables commands"
 	separator
-	echo -e "$0 cc\t<alias> [username]\t\tconnect to server"
-	echo -e "$0 add\t<alias>:<user>:<host>:[port]\tadd new server"
-	echo -e "$0 del\t<alias>\t\t\t\tdelete server"
-	echo -e "$0 export\t\t\t\t\texport config"
+	echo -e "cc\t<alias> [username]\t\tconnect to server"
+	echo -e "add\t<alias>:<user>:<host>:[port]\tadd new server"
+	echo -e "del\t<alias>\t\t\t\tdelete server"
+	echo -e "export\t\t\t\t\texport config"
 }
 
 function probe ()
@@ -145,8 +132,6 @@ if [ $# -eq 0 ]; then
 	separator
 	while IFS=: read label user ip port         
 	do    
-	test_host $ip
-	echo -ne "\t"
 	cecho -n -blue $label
 	echo -ne ' ==> '
 	cecho -n -red $user 
@@ -159,8 +144,6 @@ if [ $# -eq 0 ]; then
 	cecho -yellow $port
 	echo
 done < $HOST_FILE
-
-list_commands
 
 exit 0
 fi
@@ -207,6 +190,9 @@ case "$cmd" in
 			echo "$0: unknown alias '$alias'"
 		fi
 		;;
+     -h|--help )
+         list_commands
+         ;;
 	* )
 		echo "$0: unrecognised command '$cmd'"
 		exit 1
